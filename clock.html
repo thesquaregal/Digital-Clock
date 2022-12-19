@@ -4,54 +4,51 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chivo+Mono:wght@500&display=swap" rel="stylesheet">
     <title>Digital Clock by Erika Ybanez</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <div id="calendar">
-            
-        </div>
-        <div id="clock">
-            
-        </div>
+        <div id="clock"></div>
+        <div id="calendar"></div>
     </div>
     <script>
-        function updateTime () {
-            var time = new Date();
-            var hours = time.getHours();
-            var minutes = time.getMinutes();
-            var seconds = time.getSeconds();
-            var day = time.getDay();
-            var month = time.getMonth();
-            var year = time.getFullYear();
+    // CONSTRUCTOR
+    function TimeAndDate() {
+        this.clockElement = document.getElementById("clock");
+        this.calendarElement = document.getElementById("calendar");
+    }
+    // METHOD THAT UPDATES DATETIME USING FORMAT METHODS
+    TimeAndDate.prototype.update = function() {
+        let dateTime = new Date();
+        this.clockElement.innerHTML = this.formatTime(dateTime.getHours(), dateTime.getMinutes(), dateTime.getSeconds());
+        this.calendarElement.innerHTML = this.formatDate(dateTime.getDate(), dateTime.getMonth(), dateTime.getFullYear());
+    };
+    // METHODS THAT FORMATS DATETIME IN CONSTRUCTOR'S PROTOTYPE
+    TimeAndDate.prototype.formatTime = function(hours, minutes, seconds) {
+        return `${this.formatNumber(hours)}:${this.formatNumber(minutes)}:${this.formatNumber(seconds)}`;
+    };
+    
+    TimeAndDate.prototype.formatDate = function(day, month, year) {
+    let monthNames = 
+    ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    let monthName = monthNames[month];
 
-            if (hours < 10) {
-            hours = "0" + hours;
-            }
-            if (minutes < 10) {
-            minutes = "0" + minutes;
-            }
-            if (seconds < 10) {
-            seconds = "0" + seconds;
-            }
-            if (day < 10) {
-            day = "0" + day;
-            }
-            if (month < 10) {
-            month = "0" + month;
-            }
-            if (year < 10) {
-            year = "0" + year;
-            }
-            // Get clock <div> element
-            var clockElement = document.getElementById("clock");
-            var calendarElement = document.getElementById("calendar");
-            // Set the innerHTML of the clock element to the clock string
-            clockElement.innerHTML = hours.toString() + ":" + minutes.toString() + ":" + seconds.toString();
-            calendarElement.innerHTML = day.toString() + "/" + month.toString() + "/" + year.toString();
+    return `${this.formatNumber(day)} ${monthName} ${year}`;
+};
+    // METHOD THAT USES STRING LITERAL TO FORMAT ANY SINGLE DIGIT TO START WITH 0
+    TimeAndDate.prototype.formatNumber = function(number) {
+        if (number < 10){
+            return `0${number}`;
+        } else{
+            return `${number}`;
         }
-        setInterval(updateTime, 1000);
+    };
+    // CREATE NEW INSTANCE + BIND W/ UPDATE METHOD FROM PROTOTYPE
+    let TimeAndDateObj = new TimeAndDate();
+    setInterval(TimeAndDateObj.update.bind(TimeAndDateObj), 1000);
     </script>
 </body>
 </html>
